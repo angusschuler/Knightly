@@ -3,13 +3,18 @@ using Godot;
 public partial class Player : CharacterBody2D
 {
 	[Export]
-	public float Speed { get; set; } = 300.0f;
+	public float Speed { get; set; } = 200.0f;
+	[Export]
+	public float Acceleration { get; set; } = 5f;
+	[Export]
+	public float Friction { get; set; } = 5f;
 	[Export]
 	public float JumpVelocity { get; set; } = -400.0f;
 
 	private AnimatedSprite2D animatedSprite;
 	private Camera2D camera;
 	private AnimationPlayer animationPlayer;
+
 
 	public override void _Ready()
 	{
@@ -35,7 +40,7 @@ public partial class Player : CharacterBody2D
 		}
 
 		// Get the input direction and handle the movement/deceleration.
-		Vector2 direction = Vector2.One * Input.GetAxis("move_left", "move_right");
+		Vector2 direction = new(Input.GetAxis("move_left", "move_right"), 1);
 
 		// Flip sprite based on direction
 		if (direction.X > 0)
@@ -51,10 +56,15 @@ public partial class Player : CharacterBody2D
 		// Animate
 		Animate(direction);
 
+		Vector2 targetVelocity = direction * Speed;
+
 		// Apply the movement vector.
 		if (direction != Vector2.Zero)
 		{
-			velocity.X = direction.X * Speed;
+			var acceleration = direction != Vector2.Zero ? Acceleration : Friction;
+
+			velocity.X = Mathf.Lerp(velocity.X, targetVelocity.X, (float)delta * acceleration);
+			GD.Print(velocity.X);
 		}
 		else
 		{

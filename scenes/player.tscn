@@ -311,7 +311,7 @@ z_index = 5
 collision_layer = 2
 collision_mask = 13
 script = ExtResource("1_g2els")
-Speed = 200.0
+Speed = 150.0
 JumpVelocity = -300.0
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
